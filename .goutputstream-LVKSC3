@@ -1,0 +1,73 @@
+/* main.c
+
+   This file written 2024 by Artur Podobas and Pedro Antunes
+
+   For copyright and licensing, see file COPYING */
+
+
+/* Below functions are external and found in other files. */
+extern void print(const char*);
+extern void print_dec(unsigned int);
+extern void display_string(char*);
+extern void time2string(char*,int);
+extern void tick(int*);
+extern void delay(int);
+extern int nextprime( int );
+
+int mytime = 0x5957;
+char textstring[] = "text, more text, and even more text!";
+
+#define LEDS ((volatile unsigned int*) 0x04000000)
+
+void set_leds(unsigned int led_mask){
+  led_mask = led_mask & 0x3FF; //0x3FF = 11 1111 1111
+  *LEDS = led_mask;
+}
+
+/* Below is the function that will be called when an interrupt is triggered. */
+void handle_interrupt(unsigned cause) 
+{}
+
+/* Add your code here for initializing interrupts. */
+void labinit(void)
+{}
+
+/*At start of program count in binary from 0 to 15, 1 second delay*/
+void led_assignment(){
+  unsigned int seconds = 0;
+  set_leds(0);
+
+  while (1) {
+    time2string( textstring, mytime ); // Converts mytime to string
+    display_string( textstring ); //Print out the string 'textstring'
+    delay( 1000 );          // Delays 1 sec (adjust this value)
+    tick( &mytime );     // Ticks the clock once
+
+    seconds++;
+    set_leds(seconds);
+
+    if((seconds & 0xF)==0xF){ //0xF = 1111
+      break;
+    }    
+  }
+  
+}
+
+/* Your code goes into main as well as any needed functions. */
+int main() {
+  // Call labinit()
+  labinit();
+
+  led_assignment();
+
+  // Enter a forever loop
+  while (1) {
+    time2string( textstring, mytime ); // Converts mytime to string
+    display_string( textstring ); //Print out the string 'textstring'
+    delay( 1000 );          // Delays 1 sec (adjust this value)
+    tick( &mytime );     // Ticks the clock once
+  }
+}
+
+
+
