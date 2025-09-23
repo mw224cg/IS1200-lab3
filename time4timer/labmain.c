@@ -192,10 +192,9 @@ void time_display_loop(){
 int main() {
   // Call labinit()
   labinit();
-  
+  int timeoutcounter = 0;
   while (1)
   {
-    int timeoutcounter = 0;
     if(*TIMER_STATUS_ADDR == 1) //check if TO bit is == 1
     {
         *TIMER_STATUS_ADDR = 0; //reset TO, RUN bit not changed by writing to register
