@@ -125,3 +125,16 @@ _start:
 	jal main
 	
 loop:	j loop
+
+enable_interrupt:
+    #enable undefined bit (bit 16) in mie-register
+    csrsi mie, 16
+
+    #enable MIE (bit 3) i mstatus-register
+    csrsi mstatus, 3
+
+    #set mtvec, handle_interrupt
+    la t0, _isr_handler
+    csrw mtvec, t0
+
+    ret
